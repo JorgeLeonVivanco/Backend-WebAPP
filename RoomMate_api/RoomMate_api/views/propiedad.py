@@ -37,6 +37,8 @@ from rest_framework import generics
 from ..models import Propiedades
 import json
 
+import json
+
 class PropiedadesAll(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         propiedades = Propiedades.objects.all()
@@ -49,9 +51,15 @@ class PropiedadesAll(generics.ListAPIView):
                 propiedad_data['imagenes'] = [
                     f"{request.scheme}://{request.get_host()}/{settings.MEDIA_URL}{img}" for img in propiedad.imagenes
                 ]
+            
+            # Convertir servicios de cadena JSON a lista
+            if propiedad.servicios_json:
+                propiedad_data['servicios_json'] = json.loads(propiedad.servicios_json)
+            
             propiedades_serializadas.append(propiedad_data)
 
         return Response(propiedades_serializadas, status=200)
+
 
 
 
@@ -134,8 +142,18 @@ class PropiedadDetailView(APIView):
             propiedad = Propiedades.objects.get(pk=id)
             serializer = PropiedadesSerializer(propiedad)
             propiedad.servicios_json = json.loads(propiedad.servicios_json)
+            
+            # Obtener datos del propietario
+            propietario = propiedad.cliente.user  # Asumiendo que cliente.user es el propietario
+            propietario_data = {
+                "nombre": propietario.get_full_name(),
+                "correo": propietario.email,
+                "telefono": propiedad.telefono,  # Cambiar según tu modelo
+            }
+            
             # Convertir rutas relativas de las imágenes a URLs completas
             data = serializer.data
+            data["propietario"] = propietario_data
             if "imagenes" in data and data["imagenes"]:
                 data["imagenes"] = [
                     f"{request.scheme}://{request.get_host()}/{settings.MEDIA_URL}{img}" for img in data["imagenes"]
@@ -144,3 +162,6 @@ class PropiedadDetailView(APIView):
             return Response(data, status=status.HTTP_200_OK)
         except Propiedades.DoesNotExist:
             return Response({'error': 'Propiedad no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+
+
+#asssss
