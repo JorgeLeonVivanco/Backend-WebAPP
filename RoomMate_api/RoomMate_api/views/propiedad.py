@@ -133,6 +133,14 @@ class PropiedadDetailView(APIView):
         try:
             propiedad = Propiedades.objects.get(pk=id)
             serializer = PropiedadesSerializer(propiedad)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            propiedad.servicios_json = json.loads(propiedad.servicios_json)
+            # Convertir rutas relativas de las imágenes a URLs completas
+            data = serializer.data
+            if "imagenes" in data and data["imagenes"]:
+                data["imagenes"] = [
+                    f"{request.scheme}://{request.get_host()}/{settings.MEDIA_URL}{img}" for img in data["imagenes"]
+                ]
+            
+            return Response(data, status=status.HTTP_200_OK)
         except Propiedades.DoesNotExist:
             return Response({'error': 'Propiedad no encontrada'}, status=status.HTTP_404_NOT_FOUND)
