@@ -163,5 +163,32 @@ class PropiedadDetailView(APIView):
         except Propiedades.DoesNotExist:
             return Response({'error': 'Propiedad no encontrada'}, status=status.HTTP_404_NOT_FOUND)
 
-
+class AgregarComentarioAPIView(APIView):
+    def post(self, request, propiedad_id):
+        try:
+            # Obtener la propiedad
+            propiedad = Propiedades.objects.get(id=propiedad_id)
+            
+            # Obtener datos del comentario desde la solicitud
+            comentario_data = request.data.get('comentario', {})
+            nuevo_comentario = {
+                "usuario": comentario_data.get('usuario', 'Usuario desconocido'),
+                "fecha": datetime.now().isoformat(),
+                "texto": comentario_data.get('texto', '').strip()
+            }
+            
+            # Actualizar la lista de comentarios de la propiedad
+            comentarios = propiedad.comentarios or []  # Si es None, inicializar como lista vacía
+            comentarios.append(nuevo_comentario)
+            propiedad.comentarios = comentarios
+            propiedad.save()
+            
+            # Devolver la propiedad actualizada
+            serializer = PropiedadesSerializer(propiedad)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        except Propiedades.DoesNotExist:
+            return Response({'error': 'Propiedad no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 #asssss

@@ -29,3 +29,4 @@ def get_imagenes(self, obj):
             # Construir una lista de URLs completas para las imágenes
             return [f"{settings.MEDIA_URL}{imagen}" for imagen in obj.imagenes]
         return []
+

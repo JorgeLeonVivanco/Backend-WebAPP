@@ -41,6 +41,10 @@ urlpatterns = [
         path('propiedades-edit/', propiedad.PropiedadViewEdit.as_view()),
 
         path('propiedades/<int:id>/', propiedad.PropiedadDetailView.as_view(), name='propiedad-detail'),
+
+        path('propiedades/<int:propiedad_id>/comentarios/', propiedad.AgregarComentarioAPIView.as_view(), name='agregar-comentario'),
+
+
 ]
 
 if settings.DEBUG:  # Solo para desarrollo

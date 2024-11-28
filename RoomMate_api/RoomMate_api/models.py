@@ -36,7 +36,7 @@ class Propiedades(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, default=1)  # Relación con Cliente
     # Nuevos campos añadidos
     tipo_propiedad = models.CharField(max_length=255, null=True, blank=True)  # Ej. "Apartamento", "Casa", etc.
-    comentario = models.TextField(null=True, blank=True)  # Comentarios de los usuarios
+    comentarios = models.JSONField(default=list)  # Este campo almacena una lista de comentarios
     calificacion = models.IntegerField(null=True, blank=True)  # Calificación de 1 a 10
 
     def __str__(self):
