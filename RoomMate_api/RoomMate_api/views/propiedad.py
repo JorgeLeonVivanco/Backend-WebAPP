@@ -192,3 +192,66 @@ class AgregarComentarioAPIView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 #asssss
+
+class EditarComentarioAPIView(APIView):
+    def put(self, request, id, *args, **kwargs):
+        try:
+            # Obtener la propiedad usando el id de la URL
+            propiedad = Propiedades.objects.get(id=id)
+
+            # Obtener el nombre del cliente (usuario)
+            usuario = request.user.get_full_name()  # Asume que el nombre completo del usuario está asociado con la propiedad
+
+            # Buscar el comentario del cliente por nombre
+            comentario = None
+            for com in propiedad.comentarios:
+                if com['usuario'] == usuario:
+                    comentario = com
+                    break
+
+            if comentario is None:
+                return Response({'error': 'Comentario no encontrado para este usuario'}, status=status.HTTP_404_NOT_FOUND)
+
+            # Actualizar el comentario con el nuevo texto
+            comentario_data = request.data.get('comentario', {})
+            comentario['texto'] = comentario_data.get('texto', comentario['texto']).strip()
+
+            propiedad.save()
+
+            # Retornar la propiedad con el comentario actualizado
+            serializer = PropiedadesSerializer(propiedad)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Propiedades.DoesNotExist:
+            return Response({'error': 'Propiedad no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class EliminarComentarioAPIView(APIView):
+    def delete(self, request, propiedad_id, usuario, *args, **kwargs):
+        try:
+            # Obtener la propiedad
+            propiedad = Propiedades.objects.get(id=propiedad_id)
+            
+            # Verificar si los comentarios existen en la propiedad
+            if not propiedad.comentarios:
+                return Response({'error': 'No hay comentarios para eliminar'}, status=status.HTTP_404_NOT_FOUND)
+            
+            # Buscar y eliminar el comentario del usuario especificado
+            comentarios_actualizados = [com for com in propiedad.comentarios if com['usuario'] != usuario]
+            
+            if len(comentarios_actualizados) == len(propiedad.comentarios):
+                return Response({'error': 'Comentario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            
+            # Actualizar la propiedad con la lista de comentarios sin el comentario eliminado
+            propiedad.comentarios = comentarios_actualizados
+            propiedad.save()
+
+            # Retornar la propiedad actualizada
+            serializer = PropiedadesSerializer(propiedad)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except Propiedades.DoesNotExist:
+            return Response({'error': 'Propiedad no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -42,10 +42,15 @@ urlpatterns = [
 
         path('propiedades/<int:id>/', propiedad.PropiedadDetailView.as_view(), name='propiedad-detail'),
 
+        
         path('propiedades/<int:propiedad_id>/comentarios/', propiedad.AgregarComentarioAPIView.as_view(), name='agregar-comentario'),
-
+        
+        path('propiedades/<int:id>/comentarios/editar/', propiedad.EditarComentarioAPIView.as_view(), name='editar_comentario'),
+        
+        path('propiedades/<int:propiedad_id>/comentarios/eliminar/<str:usuario>/', propiedad.EliminarComentarioAPIView.as_view(), name='eliminar_comentario')
 
 ]
 
+    
 if settings.DEBUG:  # Solo para desarrollo
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
