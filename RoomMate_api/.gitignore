@@ -56,3 +56,5 @@ RoomMate_api/migrations
 
 # Upload data
 /uploadData
+
+/RoomMate_api/venv/

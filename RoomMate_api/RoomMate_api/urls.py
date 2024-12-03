@@ -19,8 +19,11 @@ from RoomMate_api.views import bootstrap
 from RoomMate_api.views import users
 from RoomMate_api.views import auth
 from RoomMate_api.views import propiedad
+from RoomMate_api.views import filters
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
+from .views.filters import FilterPropiedadesView  # Importa correctamente la vista
 
 urlpatterns = [
     #Version
@@ -41,6 +44,8 @@ urlpatterns = [
         path('propiedades-edit/', propiedad.PropiedadViewEdit.as_view()),
 
         path('propiedades/<int:id>/', propiedad.PropiedadDetailView.as_view(), name='propiedad-detail'),
+    #Filtros
+        path('propiedades/filtros/', FilterPropiedadesView.as_view(), name='propiedad-filtros'),
 ]
 
 if settings.DEBUG:  # Solo para desarrollo

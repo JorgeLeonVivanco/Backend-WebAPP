@@ -26,8 +26,6 @@ from django_filters import rest_framework as filters
 from datetime import datetime
 from django.conf import settings
 from django.template.loader import render_to_string
-import string
-import random
 
 class CustomAuthToken(ObtainAuthToken):
 

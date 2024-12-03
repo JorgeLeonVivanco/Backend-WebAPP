@@ -75,6 +75,7 @@ class PropiedadesView(generics.CreateAPIView):
                 sanitarios=request.data.get("sanitarios", ""),
                 telefono=request.data.get("telefono", ""),
                 estados=request.data.get("estados", ""),
+                tipo_propiedad=request.data.get("tipo_propiedad",""),
                 cliente=cliente  # Asociar el cliente al crear la propiedad
             )
 
@@ -111,6 +112,7 @@ class PropiedadViewEdit(generics.CreateAPIView):
         propiedad.sanitarios = request.data["sanitarios"]
         propiedad.telefono =  request.data["telefono"]
         propiedad.estados =  request.data["estados"]
+        propiedad.tipo_propiedad = request.data["tipo_propiedad"]
         propiedad.save()
         temp = propiedad
         temp.direccion = request.data["direccion"]
