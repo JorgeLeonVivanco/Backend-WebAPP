@@ -32,12 +32,15 @@ class Propiedades(models.Model):
     sanitarios = models.CharField(max_length=255, null=True, blank=True)
     telefono = models.CharField(max_length=255, null=True, blank=True)
     estados = models.CharField(max_length=255, null=True, blank=True)
-    imagenes = models.JSONField(default=list)
+    imagenes = models.JSONField(default=list, blank=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, default=1)  # Relación con Cliente
     # Nuevos campos añadidos
     tipo_propiedad = models.CharField(max_length=255, null=True, blank=True)  # Ej. "Apartamento", "Casa", etc.
     comentarios = models.JSONField(default=list)  # Este campo almacena una lista de comentarios
     calificacion = models.IntegerField(null=True, blank=True)  # Calificación de 1 a 10
+    latitud = models.FloatField(null=True, blank=True)  # Nueva columna para la latitud
+    longitud = models.FloatField(null=True, blank=True)  # Nueva columna para la longitud
+
 
     def __str__(self):
         return f"Propiedad: {self.direccion}, capacidad: {self.capacidad}"
