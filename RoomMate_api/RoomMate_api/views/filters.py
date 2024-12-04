@@ -5,19 +5,6 @@ from rest_framework.permissions import IsAuthenticated
 from ..models import Propiedades
 from ..serializers import PropiedadesSerializer, FiltroPropiedadesSerializer
 
-# Definir los servicios disponibles con sus valores
-SERVICIOS = {
-    '1': 'Agua potable',
-    '2': 'Luz electrica',
-    '3': 'Internet',
-    '4': 'Mascotas',
-    '5': 'Cocina',
-    '6': 'Estacionamiento',
-    '7': 'Lavadora',
-    '8': 'Amueblado',
-    '9': 'Seguridad',
-}
-
 class FilterPropiedadesView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -29,7 +16,7 @@ class FilterPropiedadesView(APIView):
         else:
             return Response(filter_serializer.errors, status=400)
 
-        # Obtener las propiedades
+        # Inicializar la consulta de propiedades
         propiedades = Propiedades.objects.all()
 
         # Aplicar los filtros de precio y tipo de propiedad
@@ -40,10 +27,10 @@ class FilterPropiedadesView(APIView):
         if filters.get('tipo_propiedad'):
             propiedades = propiedades.filter(tipo_propiedad__icontains=filters['tipo_propiedad'])
 
-        # Procesar y filtrar por los servicios seleccionados
+        # Filtrar por servicios
         if filters.get('servicios'):
+            # Verificar si el parámetro 'servicios' es una cadena separada por comas
             if isinstance(filters['servicios'], str):
-                # Si los servicios están en un string, convertirlos a lista
                 servicios_list = [servicio.strip() for servicio in filters['servicios'].split(',')]
             else:
                 servicios_list = filters['servicios']

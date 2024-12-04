@@ -36,14 +36,10 @@ urlpatterns = [
         path('token/', auth.CustomAuthToken.as_view()),
     #Logout
         path('logout/', auth.Logout.as_view()),
-    #Create Materias
         path('propiedades/', propiedad.PropiedadesView.as_view()),   
-    #Maestro Data
         path('lista-propiedades/', propiedad.PropiedadesAll.as_view()),
-    #Edit Materia
-        path('propiedades-edit/', propiedad.PropiedadViewEdit.as_view()),
-
-        path('propiedades/<int:id>/', propiedad.PropiedadDetailView.as_view(), name='propiedad-detail'),
+    #Edit 
+        path('propiedades/<int:id>/', propiedad.PropiedadViewEdit.as_view(), name='editar-propiedad'),
     #Filtros
         path('propiedades/filtros/', FilterPropiedadesView.as_view(), name='propiedad-filtros'),
 ]
